@@ -8,7 +8,7 @@
 // =============================================================================
 
 // Where to send our messages (our server acts as a middleman to Claude)
-const API_URL = "http://localhost:3000/api/chat";
+const API_URL = "/api/chat";
 
 // =============================================================================
 // GLOBAL VARIABLES
