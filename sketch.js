@@ -24,17 +24,17 @@ let isLoading = false;       // Are we waiting for Claude to respond?
 // =============================================================================
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(400, 700); // Create canvas for drawing
 
   // Create text input box at top of screen
   inputField = createInput("");
   inputField.position(20, 20);
-  inputField.size(width - 140, 40);
-  inputField.attribute("placeholder", "Type your message here...");
+  inputField.size(320, 40);
+  inputField.attribute("placeholder", "Type your message to Barb here...");
 
   // Create send button next to input box
   submitButton = createButton("Send");
-  submitButton.position(width - 100, 20);
+  submitButton.position(350, 20);
   submitButton.size(80, 40);
   submitButton.mousePressed(sendMessage); // When clicked, call sendMessage()
 
@@ -55,35 +55,64 @@ function setup() {
 // =============================================================================
 
 function draw() {
-  background(240); // Light gray background
+  // White background for chat readability
+  background(222, 255, 115);
 
-  // Draw all messages starting below the input
-  let yPos = 80;
+  // Calculate total content height
+  let totalHeight = 80;
   textSize(16);
+
+  for (let msg of conversationHistory) {
+    let msgText = (msg.role === "user" ? "You: " : "Barb: ") + msg.content;
+    let words = msgText.split(' ');
+    let line = '';
+    let lineCount = 0;
+
+    for (let i = 0; i < words.length; i++) {
+      let testLine = line + words[i] + ' ';
+      if (textWidth(testLine) > 360 && i > 0) {
+        lineCount++;
+        line = words[i] + ' ';
+      } else {
+        line = testLine;
+      }
+    }
+    lineCount++; // Last line
+    totalHeight += (lineCount * 20) + 10;
+  }
+
+  // Auto-scroll offset
+  let scrollOffset = 0;
+  if (totalHeight > height - 100) {
+    scrollOffset = totalHeight - (height - 100);
+  }
+
+  // Draw messages with scroll offset
+  let yPos = 80 - scrollOffset;
 
   for (let msg of conversationHistory) {
     if (msg.role === "user") {
       fill(0, 0, 255);
-      text("You: " + msg.content, 20, yPos);
+      yPos = drawWrappedText("You: " + msg.content, 20, yPos, 360);
     } else if (msg.role === "assistant") {
       fill(255, 0, 0);
-      text("Claude: " + msg.content, 20, yPos);
+      yPos = drawWrappedText("Barb: " + msg.content, 20, yPos, 360);
     }
-    yPos += 25;
+    yPos += 10;
   }
 
   // Show loading indicator
   if (isLoading) {
     fill(100);
     textStyle(ITALIC);
-    text("Claude is typing...", 20, yPos);
+    text("Barb is typing...", 20, yPos);
     textStyle(NORMAL);
   }
 }
 
-// =============================================================================
+// ============================================================================
 // SENDING MESSAGES TO CLAUDE
-// =============================================================================
+// ============================================================================
 
 async function sendMessage() {
   // Don't send if we're already waiting or if input is empty
@@ -186,4 +215,25 @@ async function sendMessage() {
     // Hide loading indicator
     isLoading = false;
   }
+}
+// Helper function to wrap text
+function drawWrappedText(txt, x, y, maxWidth) {
+  let words = txt.split(' ');
+  let line = '';
+  let lineHeight = 20;
+
+  for (let i = 0; i < words.length; i++) {
+    let testLine = line + words[i] + ' ';
+    let testWidth = textWidth(testLine);
+
+    if (testWidth > maxWidth && i > 0) {
+      text(line, x, y);
+      line = words[i] + ' ';
+      y += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  text(line, x, y);
+  return y + lineHeight;
 }

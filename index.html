@@ -1,19 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Barb's MySpace Page</title>
+    <style>
+      body {
+        background: #FF1493 url('image.png') repeat;
+        margin: 0;
+        padding: 20px;
+        overflow-x: hidden;
+      }
 
-    <title>Sketch</title>
+      #canvas-container {
+        max-width: 90%;
+        overflow: text-wrap;
+      }
+        /* Blinking text animation */
+      @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
 
-    <link rel="stylesheet" type="text/css" href="style.css">
+    .blink {
+      animation: blink 1s infinite;
+    }
 
-    <script src="libraries/p5.min.js"></script>
-    <script src="libraries/p5.sound.min.js"></script>
+    /* Marquee styling */
+      marquee {
+      font-family: 'Bangers', cursive;
+      font-size: 36px;
+      color: #ADFF2F; /* Lime green */
+      text-shadow: 4px 4px #FF1493;
+      font-weight: bold;
+    }
+
+    /* Chaotic headings */
+    h1, h2, h3 {
+      font-family: 'Creepster', cursive;
+      font-size: 28px;
+      color: #FF6600;
+      text-shadow: 4px 4px 6px #000;
+      text-align: center;
+    }
+
+    /* Sections with different fonts */
+    .profile-header {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 62px;
+      color: #FF1493;
+      text-align: center;
+      text-shadow: 4px 4px #000;
+    }
+
+    .about-me {
+      font-family: 'Comic Neue', cursive;
+      color: #FFF;
+      background: rgba(255, 20, 147, 0.8);
+      padding: 15px;
+      border: 5px dashed #ADFF2F;
+    }
+
+    .sidebar {
+      font-family: 'Rock Salt', cursive;
+      font-size: 12px;
+      color: #FFD700;
+    }
+    canvas {
+      background: rgba(188, 244, 84, 0.95) !important;
+      border: 5px solid #FF1493;
+      box-shadow: 0 0 20px rgba(255, 20, 147, 0.8);
+      position: fixed;  /* Fixed position */
+      right: 20px;      /* Stick to right side */
+      top: 160px;        /* Start from top */
+      display: block;
+      z-index: 1000;    /* On top of other content */
+    }
+    
+    </style>
+     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Creepster&family=Permanent+Marker&family=Rock+Salt&family=Bangers&family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+    <script src="sketch.js"></script>
   </head>
 
-  <body>
+  <body> 
+        <!-- BARB'S PROFILE HEADER -->
+    <div class="profile-header blink">
+      ⭐ BARB'S MySpace ⭐
+    </div>
+
+    <!-- SCROLLING MARQUEE -->
+    <marquee behavior="scroll" direction="left">
+      🔥 WELCOME TO BARB'S PAGE 🔥 BOOK CLUB MEETS THURSDAYS (NO BOOKS ALLOWED) 🔥 LOOKING FOR A FIREFIGHTER HUSBAND 🔥 LINDA IS THE WORST 🔥
+    </marquee>
+
+    <!-- ABOUT ME SECTION -->
+    <div class="about-me">
+      <h2>About Me</h2>
+      <p><strong>Name:</strong> Barb</p>
+      <p><strong>Occupation:</strong> Tupperware Consultant | Neighborhood Hall Monitor | Fireworks Enthusiast | Ham Radio Host</p>
+      <p><strong>Relationship Status:</strong> SINGLE and ready for a FIREMAN!!!</p>
+      <p><strong>Interests:</strong> Dumpster fires (photography), drums, trash-talking Linda, unsolicited advice</p>
+      <p class="blink">🎸 FIRE IT UP! 🎸</p>
+      </div>
+
+      <!-- HAM RADIO BADGE -->
+      <div style="text-align: center; margin: 20px; font-family: 'Bangers', cursive; font-size: 44px; color: #dcf94d;">
+        📻 CALL SIGN: KD8BARB 📻
+        <br>
+        <span style="font-size: 16px; font-family: 'Comic Neue', cursive;">Tune into "Barb's Brutal Truth Hour" 24/7</span>
+      </div><!-- CLICKABLE SOUND EFFECTS SECTION -->
+      <div style="text-align: center; margin: 20px;">
+        <h3>🔊 NOISE BANK! 🔊</h3>
+        <button onclick="playHonk()" style="font-family: 'Bangers', cursive; font-size: 40px; background: #FF1493; color: white; border: 3px solid #ADFF2F; padding: 10px; margin: 5px; cursor: pointer;">
+          🚨 HONK! 🚨
+        </button>
+        <button onclick="playSiren()" style="font-family: 'Bangers', cursive; font-size: 40px; background: #FF6600; color: white; border: 3px solid #FFD700; padding: 10px; margin: 5px; cursor: pointer;">
+          🚒 FIRE SIREN 🚒
+        </button>
+        <button onclick="playCrowd()" style="font-family: 'Bangers', cursive; font-size: 40px; background: #32CD32; color: white; border: 3px solid #FF1493; padding: 10px; margin: 5px; cursor: pointer;">
+          👏 CROWD CHEER 👏
+        </button>
+      </div><!-- VISITOR COUNTER -->
+      <div style="text-align: center; font-family: 'Comic Neue', cursive; font-size: 18px; color: #FFD700; background: rgba(0,0,0,0.7); padding: 10px; margin: 30px auto; max-width: 300px; border: 3px solid #FF1493;">
+        👀 You are visitor #<span class="blink" style="color: #ADFF2F; font-size: 24px;">420,069</span> 👀
+      </div>
+      
+      <!-- TOP 8 DUMPSTER FIRES -->
+      <div style="background: rgba(50, 205, 50, 0.8); padding: 15px; margin: 20px; border: 5px solid #FF6600;">
+        <h2>🔥 TOP 8 DUMPSTER FIRES 🔥</h2>
+        <p style="font-family: 'Rock Salt', cursive; font-size: 14px; color: #000;">
+          1. Linda's "Perfect" Garden Party (it rained)<br>
+          2. The HOA Meeting of '23<br>
+          3. My Ex-Husband's Midlife Crisis<br>
+          4. That Time Karen Tried Yoga<br>
+          5. The Great Potluck Disaster<br>
+          6. Susan's MLM Presentation<br>
+          7. Nextdoor Drama: The Fireworks Debate<br>
+          8. Brad's Attempt at Home Renovation
+        </p>
+      </div>
+          <!-- CURRENTLY PLAYING -->
+    <div class="blink" style="text-align: center; font-family: 'Permanent Marker', cursive; font-size: 20px; color: #FF1493; background: rgba(0,0,0,0.8); padding: 15px; margin: 20px;">
+      🎵 NOW PLAYING: "Anarchy in the Suburbs" 🎵
+</div>
+    <div id="canvas-container"></div>
+
     <script src="config.js"></script>
-    <script src="sketch.js"></script>
+    <script src="sketch.js"></script><script>
+      // Improved sound effect functions using Web Audio API
+      function playHonk() {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = 400; // Honk frequency
+        oscillator.type = 'square'; // Square wave for honk sound
+        gainNode.gain.value = 0.3; // Volume
+        
+        oscillator.start();
+        setTimeout(() => {
+          oscillator.frequency.value = 350; // Lower pitch
+        }, 100);
+        setTimeout(() => oscillator.stop(), 300);
+      }
+      
+      function playSiren() {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.type = 'sine';
+        gainNode.gain.value = 0.3;
+        
+        // Oscillating siren effect
+        let freq = 800;
+        oscillator.frequency.value = freq;
+        oscillator.start();
+        
+        const interval = setInterval(() => {
+          freq = freq === 800 ? 1200 : 800;
+          oscillator.frequency.value = freq;
+        }, 200);
+        
+        setTimeout(() => {
+          clearInterval(interval);
+          oscillator.stop();
+        }, 1500);
+      }
+      
+      function playCrowd() {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Create multiple oscillators for crowd effect
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc.frequency.value = 200 + Math.random() * 400;
+            osc.type = 'sawtooth';
+            gain.gain.value = 0.1;
+            
+            osc.start();
+            setTimeout(() => osc.stop(), 100 + Math.random() * 200);
+          }, i * 50);
+        }
+      }
+    </script>
   </body>
 </html>
