@@ -2,8 +2,71 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Barb's MySpace Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Barb's MySpace Page</title>
     <style>
+  * {
+      box-sizing: border-box;
+      }
+
+      /* Main content wrapper */
+      .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 10px;
+      }
+
+      /* On larger screens, use flexbox for side-by-side layout */
+      @media (min-width: 768px) {
+        .content-wrapper {
+          flex-direction: row;
+          gap: 20px;
+        }
+        
+        .main-content {
+          flex: 1;
+          max-width: calc(100% - 440px);
+        }
+        
+        .chat-sidebar {
+          width: 420px;
+          position: sticky;
+          top: 20px;
+          align-self: flex-start;
+        }
+      }
+
+      /* On mobile, stack everything vertically */
+      @media (max-width: 767px) {
+        .profile-header {
+          font-size: 36px !important;
+        }
+        
+        marquee {
+          font-size: 24px !important;
+        }
+        
+        h2, h3 {
+          font-size: 20px !important;
+        }
+        
+        button {
+          font-size: 24px !important;
+          padding: 8px !important;
+        }
+        
+        canvas {
+          position: relative !important;
+          right: auto !important;
+          top: auto !important;
+          width: 100% !important;
+          height: auto !important;
+          margin: 20px 0 !important;
+        }
+      }
+
+
       body {
         background: #FF1493 url('image.png') repeat;
         margin: 0;
@@ -82,17 +145,18 @@
     <script src="sketch.js"></script>
   </head>
 
-  <body> 
-        <!-- BARB'S PROFILE HEADER -->
+  <body>
+    <!-- BARB'S PROFILE HEADER -->
     <div class="profile-header blink">
       ⭐ BARB'S MySpace ⭐
     </div>
-
     <!-- SCROLLING MARQUEE -->
     <marquee behavior="scroll" direction="left">
       🔥 WELCOME TO BARB'S PAGE 🔥 BOOK CLUB MEETS THURSDAYS (NO BOOKS ALLOWED) 🔥 LOOKING FOR A FIREFIGHTER HUSBAND 🔥 LINDA IS THE WORST 🔥
     </marquee>
 
+    <div class="content-wrapper">
+    <div class="main-content">
     <!-- ABOUT ME SECTION -->
     <div class="about-me">
       <h2>About Me</h2>
@@ -142,8 +206,17 @@
           <!-- CURRENTLY PLAYING -->
     <div class="blink" style="text-align: center; font-family: 'Permanent Marker', cursive; font-size: 20px; color: #FF1493; background: rgba(0,0,0,0.8); padding: 15px; margin: 20px;">
       🎵 NOW PLAYING: "Anarchy in the Suburbs" 🎵
-</div>
-    <div id="canvas-container"></div>
+    </div>
+    
+    <div class="chat-sidebar">
+      <div id="canvas-container"></div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="sketch.js"></script>
+  <!-- sound effect scripts -->
+</body>
 
     <script src="config.js"></script>
     <script src="sketch.js"></script><script>

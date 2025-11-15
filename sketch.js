@@ -24,21 +24,24 @@ let isLoading = false;       // Are we waiting for Claude to respond?
 // =============================================================================
 
 function setup() {
-  createCanvas(400, 700); // Create canvas for drawing
+  // Responsive canvas sizing
+  let canvasWidth = min(400, windowWidth - 40);
+  let canvasHeight = 700;
+  createCanvas(canvasWidth, canvasHeight);
 
   // Create text input box at top of screen
   inputField = createInput("");
   inputField.position(20, 20);
-  inputField.size(320, 40);
+  inputField.size(canvasWidth - 80, 40);
   inputField.attribute("placeholder", "Type your message to Barb here...");
 
   // Create send button next to input box
   submitButton = createButton("Send");
-  submitButton.position(350, 20);
-  submitButton.size(80, 40);
-  submitButton.mousePressed(sendMessage); // When clicked, call sendMessage()
+  submitButton.position(canvasWidth - 60, 20);
+  submitButton.size(50, 40);
+  submitButton.mousePressed(sendMessage);
 
-  // Allow Enter key to send message (instead of clicking button)
+  // Allow Enter key to send message
   inputField.elt.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
       sendMessage();
@@ -70,7 +73,7 @@ function draw() {
 
     for (let i = 0; i < words.length; i++) {
       let testLine = line + words[i] + ' ';
-      if (textWidth(testLine) > 360 && i > 0) {
+      if (textWidth(testLine) > (width - 40) && i > 0) {
         lineCount++;
         line = words[i] + ' ';
       } else {
@@ -93,10 +96,10 @@ function draw() {
   for (let msg of conversationHistory) {
     if (msg.role === "user") {
       fill(0, 0, 255);
-      yPos = drawWrappedText("You: " + msg.content, 20, yPos, 360);
+      yPos = drawWrappedText("You: " + msg.content, 20, yPos, width - 40);
     } else if (msg.role === "assistant") {
       fill(255, 0, 0);
-      yPos = drawWrappedText("Barb: " + msg.content, 20, yPos, 360);
+      yPos = drawWrappedText("Barb: " + msg.content, 20, yPos, width - 40);
     }
     yPos += 10;
   }
@@ -109,7 +112,6 @@ function draw() {
     textStyle(NORMAL);
   }
 }
-
 // ============================================================================
 // SENDING MESSAGES TO CLAUDE
 // ============================================================================
@@ -141,9 +143,9 @@ async function sendMessage() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",  // Which AI model to use
-        max_tokens: 1024,                      // Maximum length of response
-        messages: conversationHistory          // All previous messages
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 1024,
+        messages: conversationHistory
       })
     });
 
@@ -157,65 +159,53 @@ async function sendMessage() {
     const decoder = new TextDecoder();
     let buffer = "";
 
-    // Add placeholder for assistant's response (after we know streaming started successfully)
+    // Add placeholder for assistant's response
     conversationHistory.push({
       role: "assistant",
       content: ""
     });
 
-    // Hide loading indicator now that we have a response container
+    // Hide loading indicator
     isLoading = false;
 
-    // Get reference to the assistant's message we're building
+    // Get reference to the assistant's message
     const assistantMessage = conversationHistory[conversationHistory.length - 1];
 
     while (true) {
       const { done, value } = await reader.read();
-
       if (done) break;
 
-      // Decode the chunk and add to buffer
       buffer += decoder.decode(value, { stream: true });
-
-      // Process complete SSE events
       const lines = buffer.split('\n');
-      buffer = lines.pop(); // Keep incomplete line in buffer
+      buffer = lines.pop();
 
       for (const line of lines) {
         if (line.startsWith('data: ')) {
           const data = line.slice(6);
-
           if (data === '[DONE]') continue;
 
           try {
             const event = JSON.parse(data);
-
-            // Handle content_block_delta events
             if (event.type === 'content_block_delta' && event.delta?.text) {
               assistantMessage.content += event.delta.text;
             }
-
           } catch (e) {
             // Skip unparseable lines
           }
         }
       }
     }
-
   } catch (error) {
-    // If something goes wrong, show error message
     console.error("Error calling Anthropic API:", error);
-
-    // Add error message to conversation
     conversationHistory.push({
       role: "assistant",
       content: "Error: " + error.message
     });
-
-    // Hide loading indicator
     isLoading = false;
   }
 }
+
+
 // Helper function to wrap text
 function drawWrappedText(txt, x, y, maxWidth) {
   let words = txt.split(' ');
@@ -236,4 +226,15 @@ function drawWrappedText(txt, x, y, maxWidth) {
   }
   text(line, x, y);
   return y + lineHeight;
+}
+
+// Handle window resizing
+function windowResized() {
+  let canvasWidth = min(400, windowWidth - 40);
+  let canvasHeight = 700;
+  resizeCanvas(canvasWidth, canvasHeight);
+
+  // Reposition and resize input elements
+  inputField.size(canvasWidth - 80, 40);
+  submitButton.position(canvasWidth - 60, 20);
 }
